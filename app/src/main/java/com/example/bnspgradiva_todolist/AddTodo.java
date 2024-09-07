@@ -48,6 +48,7 @@ public class AddTodo extends AppCompatActivity {
             remove_button.setVisibility(View.VISIBLE);
             remove_button.setOnClickListener(v -> {
                 toDoHelper.deleteTodo(getIntent().getIntExtra("id", 0));
+                finish();
             });
 
         }
@@ -58,15 +59,20 @@ public class AddTodo extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
+            
             String todo = edt_todo.getText().toString();
             if (todo.isEmpty()) {
                 Toast.makeText(AddTodo.this, "Jangan ada yang kosong", Toast.LENGTH_SHORT).show();
                 return;
             }
             ToDoParcel toDoParcel = new ToDoParcel(getIntent().getIntExtra("id", 0), todo, false);
-
-            toDoHelper.insertTodo(toDoParcel);
-
+            
+            if (MODE == 102) {
+            	toDoParcel.setDone(getIntent().getBooleanExtra("isDone", false));
+            	toDoHelper.updateTodo(toDoParcel);
+            } else {
+            	toDoHelper.insertTodo(toDoParcel);
+	    }
             finish();
 
         }

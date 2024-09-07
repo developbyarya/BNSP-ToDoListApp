@@ -3,6 +3,7 @@ package com.example.bnspgradiva_todolist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -76,10 +77,12 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.OnDat
     @Override
     public void onEditClick(View v, int id) {
         TextView prevTodo = v.findViewById(R.id.txt_todo_title);
+        CheckBox cb =  v.findViewById(R.id.cb_done);
         Intent intent = new Intent(this, AddTodo.class);
         intent.putExtra("MODE", 102);
         intent.putExtra("id", id);
         intent.putExtra("prevTodo", prevTodo.getText());
+        intent.putExtra("idDone", cb.isChecked());
         startActivity(intent);
     }
 
