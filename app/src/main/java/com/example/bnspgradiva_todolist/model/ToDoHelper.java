@@ -1,5 +1,7 @@
 package com.example.bnspgradiva_todolist.model;
 
+import static android.provider.BaseColumns._ID;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -55,6 +57,7 @@ public class ToDoHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT * FROM todo", null);
         if (cursor.moveToFirst()) {
             do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(_ID));
                 String todo = cursor.getString(cursor.getColumnIndexOrThrow(TODO));
                 boolean isDone;
                 if (cursor.getInt(cursor.getColumnIndexOrThrow(DONE)) > 0) {
@@ -62,7 +65,7 @@ public class ToDoHelper extends SQLiteOpenHelper {
                 } else {
                     isDone = false;
                 }
-                todos.add(new ToDoParcel(todo, isDone));
+                todos.add(new ToDoParcel(id, todo, isDone));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -79,6 +82,7 @@ public class ToDoHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT * FROM todo WHERE done=0", null);
         if (cursor.moveToFirst()) {
             do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(_ID));
                 String todo = cursor.getString(cursor.getColumnIndexOrThrow(TODO));
                 boolean isDone;
                 if (cursor.getInt(cursor.getColumnIndexOrThrow(DONE)) > 0) {
@@ -86,7 +90,7 @@ public class ToDoHelper extends SQLiteOpenHelper {
                 } else {
                     isDone = false;
                 }
-                todos.add(new ToDoParcel(todo, isDone));
+                todos.add(new ToDoParcel(id, todo, isDone));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -102,6 +106,7 @@ public class ToDoHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT * FROM todo WHERE done>0", null);
         if (cursor.moveToFirst()) {
             do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(_ID));
                 String todo = cursor.getString(cursor.getColumnIndexOrThrow(TODO));
                 boolean isDone;
                 if (cursor.getInt(cursor.getColumnIndexOrThrow(DONE)) > 0) {
@@ -109,7 +114,7 @@ public class ToDoHelper extends SQLiteOpenHelper {
                 } else {
                     isDone = false;
                 }
-                todos.add(new ToDoParcel(todo, isDone));
+                todos.add(new ToDoParcel(id, todo, isDone));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -120,11 +125,18 @@ public class ToDoHelper extends SQLiteOpenHelper {
     public void updateTodo(ToDoParcel toDoParcel){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
+        value.put(ToDoContract.ToDoEntry._ID, toDoParcel.getId());
         value.put(ToDoContract.ToDoEntry.TODO, toDoParcel.getToDo());
         value.put(ToDoContract.ToDoEntry.DONE, toDoParcel.isDone());
-        db.update(TABLE_NAME, value, ToDoContract.ToDoEntry.TODO + " = ?", new String[]{toDoParcel.getToDo()});
+        db.update(TABLE_NAME, value, ToDoContract.ToDoEntry._ID + " = ?", new String[]{String.valueOf(toDoParcel.getId())});
         db.close();
+    }
 
+    public long  deleteTodo(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        long res = db.delete(TABLE_NAME, _ID + " = ?", new String[]{String.valueOf(id)});
+        db.close();
+        return res;
     }
 
 

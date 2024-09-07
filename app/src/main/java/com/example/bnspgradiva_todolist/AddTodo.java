@@ -19,11 +19,12 @@ import com.example.bnspgradiva_todolist.model.ToDoParcel;
 
 public class AddTodo extends AppCompatActivity {
     private EditText edt_todo;
-    private Button add_button;
+    private Button add_button, remove_button;
     private boolean edit_mode;
     private ToDoHelper toDoHelper;
 
     private final int STATUS_CODE_SUCCESS = 100;
+    private int MODE;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -36,8 +37,20 @@ public class AddTodo extends AppCompatActivity {
 
         edt_todo = findViewById(R.id.edt_todo);
         add_button = findViewById(R.id.btn_add);
+        remove_button = findViewById(R.id.btn_remove);
 
         add_button.setOnClickListener(add_modify_click);
+        MODE = getIntent().getIntExtra("MODE", 100);
+
+        if (MODE == 102) {
+            edt_todo.setText(getIntent().getStringExtra("prevTodo"));
+            add_button.setText("EDIT");
+            remove_button.setVisibility(View.VISIBLE);
+            remove_button.setOnClickListener(v -> {
+                toDoHelper.deleteTodo(getIntent().getIntExtra("id", 0));
+            });
+
+        }
 
     }
 
@@ -50,7 +63,7 @@ public class AddTodo extends AppCompatActivity {
                 Toast.makeText(AddTodo.this, "Jangan ada yang kosong", Toast.LENGTH_SHORT).show();
                 return;
             }
-            ToDoParcel toDoParcel = new ToDoParcel(todo, false);
+            ToDoParcel toDoParcel = new ToDoParcel(getIntent().getIntExtra("id", 0), todo, false);
 
             toDoHelper.insertTodo(toDoParcel);
 
@@ -58,4 +71,10 @@ public class AddTodo extends AppCompatActivity {
 
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        toDoHelper.close();
+        super.onDestroy();
+    }
 }

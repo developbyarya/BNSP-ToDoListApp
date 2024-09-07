@@ -2,6 +2,8 @@ package com.example.bnspgradiva_todolist;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.OnDat
         FloatingActionButton fab = findViewById(R.id.fab_add);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, AddTodo.class);
-            intent.putExtra("edit_mode", false);
+            intent.putExtra("MODE", 100);
             startActivity(intent);
         });
 
@@ -71,6 +73,15 @@ public class MainActivity extends AppCompatActivity implements ToDoAdapter.OnDat
         load_todos();
     }
 
+    @Override
+    public void onEditClick(View v, int id) {
+        TextView prevTodo = v.findViewById(R.id.txt_todo_title);
+        Intent intent = new Intent(this, AddTodo.class);
+        intent.putExtra("MODE", 102);
+        intent.putExtra("id", id);
+        intent.putExtra("prevTodo", prevTodo.getText());
+        startActivity(intent);
+    }
 
 
 }

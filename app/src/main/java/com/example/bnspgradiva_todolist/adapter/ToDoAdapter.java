@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     public List<ToDoParcel> todos;
-    private boolean onBind = false;
+     private boolean onBind = false;
 
     @NonNull
     @Override
@@ -32,9 +32,15 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     }
     @Override
     public void onBindViewHolder(@NonNull ToDoAdapter.ViewHolder holder, int position) {
+
         ToDoParcel todo = todos.get(position);
         holder.textView.setText(todo.getToDo());
         holder.checkBox.setChecked(todo.isDone());
+
+        holder.itemView.setOnClickListener( v -> {
+            this.dataChangeListener.onEditClick(v, todo.getId());
+        });
+
 
         holder.checkBox.setOnCheckedChangeListener((bView, isCheck) -> {
 
@@ -84,10 +90,18 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
     public interface OnDataChangeListener {
         void onDataChanged();
+        void onEditClick(View v, int id);
     }
+
+
     private OnDataChangeListener dataChangeListener;
+    private View.OnClickListener onEditClick;
 
     public void setOnDataChangeListener(OnDataChangeListener listener) {
         this.dataChangeListener = listener;
+    }
+
+    public void setOnClickListener(View.OnClickListener onEdit) {
+        this.onEditClick = onEdit;
     }
 }

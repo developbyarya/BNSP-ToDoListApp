@@ -8,8 +8,10 @@ import androidx.annotation.NonNull;
 public class ToDoParcel implements Parcelable {
     private String toDo;
     private boolean done;
+    private int id;
 
-    public ToDoParcel(String toDo, boolean done) {
+    public ToDoParcel(int id, String toDo, boolean done) {
+        this.id = id;
         this.toDo = toDo;
         this.done = done;
     }
@@ -42,7 +44,13 @@ public class ToDoParcel implements Parcelable {
         parcel.writeByte((byte) (done ? 1 : 0));
     }
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public boolean isDone() {
         return done;
